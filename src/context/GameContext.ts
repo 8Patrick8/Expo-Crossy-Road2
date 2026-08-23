@@ -2,7 +2,8 @@ import { createContext } from "react";
 
 export default createContext({
   character: "chicken",
-  setCharacter() {},
+  setCharacter(_id: string) {},
   highscore: 0,
-  setHighscore() {},
+  setHighscore(_score: number) {},
+  resetHighscore() {},
 });
