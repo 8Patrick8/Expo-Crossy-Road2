@@ -17,7 +17,7 @@ import GameContext from "@/context/GameContext";
 let hasShownTitle = false;
 
 function Screen(props) {
-  const { setCharacter, character } = React.useContext(GameContext);
+  const { setCharacter, character, highscore } = React.useContext(GameContext);
   const animation = new Animated.Value(0);
 
   React.useEffect(() => {
@@ -104,6 +104,8 @@ function Screen(props) {
           style={[styles.title, animatedTitleStyle]}
         />
 
+        <Text style={styles.highscore}>TOP {highscore}</Text>
+
         <View
           style={{
             justifyContent: "center",
@@ -159,6 +161,19 @@ const styles = StyleSheet.create({
     letterSpacing: 0.9,
     backgroundColor: "transparent",
     textAlign: "right",
+    shadowColor: "black",
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    shadowOffset: { width: 0, height: 0 },
+  },
+  highscore: {
+    fontFamily: "retro",
+    color: "#f8e84d",
+    fontSize: 20,
+    letterSpacing: 0.9,
+    backgroundColor: "transparent",
+    textAlign: "center",
+    marginTop: 8,
     shadowColor: "black",
     shadowOpacity: 1,
     shadowRadius: 0,
