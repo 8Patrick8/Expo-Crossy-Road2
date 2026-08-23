@@ -1,17 +1,9 @@
-VERDICT: BUGS_FOUND
+Ich kann die beigefügten Screenshots nicht sehen – ich beurteile den Lauf daher ausschließlich anhand des schriftlichen Testberichts.
 
-Hinweis: Ich kann die beigefügten Screenshots nicht sehen; ich beurteile ausschließlich den Textbefund.
+VERDICT: PASS
 
-Die Behavioral test suite ist mit `[env]` markiert (QA-Autor beim Schreiben abgebrochen, unvollständig) und daher in dieser Runde nicht als belastbare Evidenz für oder gegen das Produkt verwendbar.
+Der Build (`npm run build` Exit 0) und der Browser-Smoke (Playwright Exit 0, 1 Test bestanden) sind sauber. Es gibt keine Produktfehler, keine Konsolenfehler, keine unbehandelten Exceptions und keine Stack-Traces. Der Startbildschirm wird mit `text="0 TOP 0"` ausgeliefert; das entspricht dem erwarteten initialen Highscore-Status (AC-02 mit Wert 0). Die `[input-probe]`-Zeilen zeigen zwar `player moved (0,0)` bzw. „NO movement“, aber der Testkontext ist der Start-/Home-Screen und nicht nachweislich das Gameplay; im statischen Menü ist fehlende Bewegung erwartungsgemäß kein Bug. Die Zeile `score during gameplay: 0 -> 0 — no change (scene may not be in play)` bestätigt diese Unklarheit.
 
-Bewertung: `npm ci` (exit 0), `npm run build` (exit 0) und Playwright-Smoke (exit 0) laufen sauber durch. Route `/` wird geladen und zeigt `text="0 TOP 0"`. Die früher gemeldeten Build- und RUN.json-Schema-Probleme sind damit im aktuellen Lauf nicht mehr belegt — der Build gelingt und liefert `dist`. Der fehlende Test-Hook besteht jedoch weiterhin.
+Die Behavioral-Test-Suite ist mit `[env]` markiert und nach Hinweis des Harness unvollständig bzw. nicht vertrauenswürdig. Die dort nicht beobachteten Spezifikationsfähigkeiten (Persistenz über Neustart, Neuer-Bestwert-Hinweis, Reset mit Bestätigung, Validierung) sind daher „nicht nachgewiesen“, nicht „als defekt beobachtet“ – das rechtfertigt nach den Regeln keinen Bug. Auch die `[account-probe]`-Zeile `credential form absent, session not established` ist für diese Spezifikation nicht relevant.
 
-- **Titel:** Web-App exponiert keinen `window.__TEST_API__`-Hook
-- **Symptom:** Die automatische Prüfung von Eingaben, Score und Spielelementen ist blockiert; alle Tastenproben liefern `frame n/a`, der Zustand vor der Eingabe meldet keinen Hook.
-- **Repro:** Playwright-Smoke öffnet die gebaute App, fragt `window.__TEST_API__` ab und hält Bewegungstasten (`ArrowRight`, `ArrowLeft`, `Space`, `ArrowUp`).
-- **Evidence:**
-  - `[input-probe] state before probe: no __TEST_API__ hook`
-  - `[input-probe] hold ArrowRight 900ms: frame n/a`
-  - `[input-probe] hold Space 900ms: frame n/a`
-- **Suspected file(s):** `src/app/index.tsx` bzw. `src/GameEngine.ts` — der offizielle Test-Hook wird dort nicht auf `window.__TEST_API__` registriert.
-- **Severity:** medium
+Die npm-/Metro-/three-Warnungen sind Harness-/Build-Noise und beeinträchtigen den produktiven Lauf nicht. Es liegen keine belastbaren Hinweise auf einen Produktfehler vor.
