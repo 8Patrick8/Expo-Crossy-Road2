@@ -181,6 +181,7 @@ class Game extends Component {
     return (
       <View style={StyleSheet.absoluteFillObject}>
         <GameOverScreen
+          score={this.state.score}
           showSettings={() => {
             this.setState({ showSettings: true });
           }}

@@ -4,6 +4,7 @@ import {
   Animated,
   Easing,
   StyleSheet,
+  Text,
   useWindowDimensions,
   View,
 } from "react-native";
@@ -15,8 +16,6 @@ import AudioManager from "@/AudioManager";
 import Characters from "@/Characters";
 import GameContext from "@/context/GameContext";
 import Images from "@/Images";
-
-// import { setGameState } from '../src/actions/game';
 
 //TODO: Make this dynamic
 const banner = [
@@ -53,9 +52,11 @@ const banner = [
 
 // const AnimatedBanner = Animated.createAnimatedComponent(Banner);
 
-function GameOver({ ...props }) {
+function GameOver({ score = 0, ...props }) {
   const { width } = useWindowDimensions();
-  const { setCharacter } = React.useContext(GameContext);
+  const { setCharacter, highscore = 0, setHighscore } =
+    React.useContext(GameContext);
+  const [wasNewBest] = React.useState(() => score > highscore);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [characters, setCharacters] = React.useState(
     Object.keys(Characters).map((val) => Characters[val])
@@ -63,6 +64,12 @@ function GameOver({ ...props }) {
   const [animations, setAnimations] = React.useState(
     banner.map((val) => new Animated.Value(0))
   );
+
+  React.useEffect(() => {
+    if (wasNewBest) {
+      setHighscore(score);
+    }
+  }, []);
 
   const dismiss = () => {
     // props.navigation.goBack();
@@ -138,6 +145,7 @@ function GameOver({ ...props }) {
       ]}
     >
       <View key="content" style={{ flex: 1, justifyContent: "center" }}>
+        {wasNewBest && <Text style={styles.newBest}>Neuer Bestwert</Text>}
         {banner.map((val, index) => (
           <Banner
             animatedValue={animations[index].interpolate({
@@ -181,6 +189,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "transparent",
+  },
+  newBest: {
+    alignSelf: "center",
+    backgroundColor: "#FFB454",
+    color: "#0F0F14",
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    fontWeight: "700",
+    fontSize: 12,
+    letterSpacing: 1,
+    marginBottom: 12,
+    overflow: "hidden",
   },
   paragraph: {
     margin: 24,

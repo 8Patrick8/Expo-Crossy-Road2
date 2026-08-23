@@ -8,7 +8,7 @@
       "kind": "static",
       "serve_dir": "dist",
       "install": [["npm", "ci"]],
-      "build": ["npm", "run", "build"]
+      "build": [["npm", "run", "build"]]
     }
   ]
 }
