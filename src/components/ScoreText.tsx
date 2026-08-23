@@ -13,16 +13,8 @@ function generateTextShadow(width) {
 }
 const textShadow = generateTextShadow(4);
 const textShadowHighscore = generateTextShadow(2);
-export default function Score({ gameOver, score, ...props }) {
-  const { highscore = 0, setHighscore } = React.useContext(GameContext);
-
-  React.useEffect(() => {
-    if (gameOver) {
-      if (score > highscore) {
-        setHighscore(score);
-      }
-    }
-  }, [gameOver]);
+export default function Score({ score, ...props }) {
+  const { highscore = 0 } = React.useContext(GameContext);
 
   const { top, left } = useSafeArea();
 
