@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { Share, StyleSheet, Text, View } from "react-native";
+import { Alert, Share, StyleSheet, Text, View } from "react-native";
 
 import Button from "@/components/Button";
 import Characters from "@/Characters";
 import Colors from "@/Colors";
+import GameContext from "@/context/GameContext";
 import Images from "@/Images";
 
-// import Footer from './Footer';
-
-const TitleButton = ({ text, imageStyle, source, onPress }) => (
+const TitleButton = ({ text, imageStyle, source, onPress, textColor = "white" }) => (
   <View
     style={{
       justifyContent: "center",
@@ -23,7 +22,7 @@ const TitleButton = ({ text, imageStyle, source, onPress }) => (
       style={{
         fontFamily: "retro",
         textAlign: "center",
-        color: "white",
+        color: textColor,
         fontSize: 12,
         marginTop: 8,
       }}
@@ -34,12 +33,30 @@ const TitleButton = ({ text, imageStyle, source, onPress }) => (
 );
 
 class Settings extends Component {
+  static contextType = GameContext;
+
   state = {
     currentIndex: 0,
     characters: Object.keys(Characters).map((val) => Characters[val]),
   };
   dismiss = () => {
     this.props.goBack();
+  };
+
+  resetHighscore = () => {
+    Alert.alert(
+      "Reset Highscore",
+      "Are you sure you want to reset your best score to 0? This cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Reset",
+          style: "destructive",
+          onPress: () => this.context.resetHighscore(),
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   pickRandom = () => {
@@ -141,6 +158,13 @@ class Settings extends Component {
         imageStyle: { width: 120, height: 48 },
         onPress: (_) => {},
       },
+      {
+        text: "Reset\nHighscore",
+        source: Images.button.rank,
+        imageStyle: imageStyle,
+        textColor: "#FF5C5C",
+        onPress: () => this.resetHighscore(),
+      },
     ];
 
     return (
@@ -182,13 +206,13 @@ class Settings extends Component {
                 source={val.source}
                 text={val.text}
                 imageStyle={val.imageStyle}
+                textColor={val.textColor}
                 onPress={val.onPress}
               />
             ))}
           </View>
         </View>
 
-        {/* <Footer /> */}
       </View>
     );
   }
