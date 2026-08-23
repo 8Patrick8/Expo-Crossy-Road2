@@ -5,4 +5,5 @@ export default createContext({
   setCharacter() {},
   highscore: 0,
   setHighscore() {},
+  resetHighscore() {},
 });

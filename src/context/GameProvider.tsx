@@ -3,25 +3,56 @@ import * as React from "react";
 
 import GameContext from "./GameContext";
 
-const STORAGE_KEY = "@BouncyBacon:Character";
+const CHARACTER_STORAGE_KEY = "@BouncyBacon:Character";
+const HIGHSCORE_STORAGE_KEY = "@BouncyBacon:Highscore";
 const SHOULD_REHYDRATE = true;
 
 const defaultState = { character: "chicken", highscore: 0 };
 
-async function cacheAsync(value) {
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+function normalizeHighscore(value) {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0
+    ? value
+    : 0;
 }
 
-async function rehydrateAsync() {
+async function cacheCharacterAsync(value) {
+  await AsyncStorage.setItem(CHARACTER_STORAGE_KEY, JSON.stringify(value));
+}
+
+async function cacheHighscoreAsync(value) {
+  await AsyncStorage.setItem(HIGHSCORE_STORAGE_KEY, String(value));
+}
+
+async function rehydrateCharacterAsync() {
   if (!SHOULD_REHYDRATE || !AsyncStorage) {
-    return defaultState;
+    return defaultState.character;
   }
   try {
-    const item = await AsyncStorage.getItem(STORAGE_KEY);
+    const item = await AsyncStorage.getItem(CHARACTER_STORAGE_KEY);
+    if (item == null) {
+      return defaultState.character;
+    }
     const data = JSON.parse(item);
-    return data;
-  } catch {
-    return defaultState;
+    return typeof data === "string" ? data : defaultState.character;
+  } catch (error) {
+    console.warn("Failed to rehydrate character from AsyncStorage:", error);
+    return defaultState.character;
+  }
+}
+
+async function rehydrateHighscoreAsync() {
+  if (!SHOULD_REHYDRATE || !AsyncStorage) {
+    return defaultState.highscore;
+  }
+  try {
+    const item = await AsyncStorage.getItem(HIGHSCORE_STORAGE_KEY);
+    if (item == null) {
+      return defaultState.highscore;
+    }
+    return normalizeHighscore(Number(item));
+  } catch (error) {
+    console.warn("Failed to rehydrate highscore from AsyncStorage:", error);
+    return defaultState.highscore;
   }
 }
 
@@ -30,16 +61,20 @@ export default function GameProvider({ children }) {
   const [highscore, setHighscore] = React.useState(defaultState.highscore);
 
   React.useEffect(() => {
-    const parseModulesAsync = async () => {
+    const rehydrateAsync = async () => {
       try {
-        const { character, highscore } = await rehydrateAsync();
-        // setCharacter(character);
-        setHighscore(highscore);
-      } catch (ignored) {}
-      //   setLoaded(true);
+        const [storedCharacter, storedHighscore] = await Promise.all([
+          rehydrateCharacterAsync(),
+          rehydrateHighscoreAsync(),
+        ]);
+        setCharacter(storedCharacter);
+        setHighscore(storedHighscore);
+      } catch (error) {
+        console.warn("Failed to rehydrate GameContext state:", error);
+      }
     };
 
-    parseModulesAsync();
+    rehydrateAsync();
   }, []);
 
   return (
@@ -48,12 +83,17 @@ export default function GameProvider({ children }) {
         character,
         setCharacter: (character) => {
           setCharacter(character);
-          cacheAsync({ character, highscore });
+          cacheCharacterAsync(character);
         },
         highscore,
-        setHighscore: (highscore) => {
-          setHighscore(highscore);
-          cacheAsync({ character, highscore });
+        setHighscore: (score) => {
+          const normalized = normalizeHighscore(score);
+          setHighscore(normalized);
+          cacheHighscoreAsync(normalized);
+        },
+        resetHighscore: () => {
+          setHighscore(0);
+          cacheHighscoreAsync(0);
         },
       }}
     >
