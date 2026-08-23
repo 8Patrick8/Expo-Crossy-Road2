@@ -108,6 +108,7 @@ class Game extends Component {
 
   componentWillUnmount() {
     cancelAnimationFrame(this.engine.raf);
+    this.unregisterTestApi();
     // Dimensions.removeEventListener("change", this.onScreenResize);
   }
 
@@ -118,7 +119,42 @@ class Game extends Component {
     // );
 
     Dimensions.addEventListener("change", this.onScreenResize);
+    this.registerTestApi();
   }
+
+  registerTestApi = () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const component = this;
+    const testApi = {
+      get scene() {
+        return component.engine.scene;
+      },
+      get player() {
+        return {
+          x: component.engine._hero.position.x,
+          y: component.engine._hero.position.y,
+        };
+      },
+      get score() {
+        return component.state.score;
+      },
+    };
+    Object.defineProperty(window, "__TEST_API__", {
+      value: testApi,
+      writable: false,
+      configurable: true,
+      enumerable: true,
+    });
+  };
+
+  unregisterTestApi = () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    delete (window as any).__TEST_API__;
+  };
 
   onScreenResize = ({ window }) => {
     this.engine.updateScale();
