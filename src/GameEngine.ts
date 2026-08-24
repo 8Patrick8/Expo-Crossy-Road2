@@ -34,7 +34,11 @@ export default class Engine {
     }
   };
 
-  setupGame = (character) => {
+  setupGame = (character, mode: "classic" | "daily" = "classic"): void => {
+    // `mode` is wired but not yet consumed; seed evaluation lands in the
+    // "Deterministische Streckenerzeugung" ticket.
+    void mode;
+
     this.scene = new CrossyScene({});
 
     this.camera = new CrossyCamera();
