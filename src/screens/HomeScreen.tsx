@@ -3,6 +3,7 @@ import {
   Animated,
   Dimensions,
   Easing,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,18 +14,29 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Hand from "@/components/HandCTA";
 import Footer from "@/components/Home/Footer";
 import GameContext from "@/context/GameContext";
+import { getTodayKey } from "@/utils/prng";
 
 let hasShownTitle = false;
 
 function Screen(props) {
-  const { setCharacter, character, highscore } = React.useContext(GameContext);
+  const { setMode, highscore } = React.useContext(GameContext);
   const animation = new Animated.Value(0);
+
+  const handlePlayClassic = () => {
+    setMode("classic");
+    props.onPlay();
+  };
+
+  const handlePlayDaily = () => {
+    setMode("daily");
+    props.onPlayDaily();
+  };
 
   React.useEffect(() => {
     function onKeyUp({ keyCode }) {
       // Space, up-arrow
       if ([32, 38].includes(keyCode)) {
-        props.onPlay();
+        handlePlayClassic();
       }
     }
 
@@ -92,7 +104,7 @@ function Screen(props) {
             easing: Easing.in(Easing.qubic),
             onComplete: ({ finished }) => {
               if (finished) {
-                props.onPlay();
+                handlePlayClassic();
               }
             },
           }).start();
@@ -129,6 +141,22 @@ function Screen(props) {
           /> */}
         </View>
       </TouchableOpacity>
+
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`Tages-Challenge ${getTodayKey()}`}
+        onPress={handlePlayDaily}
+        style={({ pressed }) => [
+          styles.dailyEntry,
+          pressed && styles.dailyEntryPressed,
+        ]}
+      >
+        <View style={styles.dailyEntryText}>
+          <Text style={styles.dailyEntryLabel}>Tages-Challenge</Text>
+          <Text style={styles.dailyEntryDate}>{getTodayKey()}</Text>
+        </View>
+        <Text style={styles.dailyEntryChevron}>›</Text>
+      </Pressable>
     </View>
   );
 }
@@ -178,6 +206,55 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 0,
     shadowOffset: { width: 0, height: 0 },
+  },
+  dailyEntry: {
+    position: "absolute",
+    top: "50%",
+    marginTop: 200,
+    width: "80%",
+    maxWidth: 420,
+    minHeight: 56,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#1A1A22",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#2E2E3A",
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.35,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+  dailyEntryPressed: {
+    backgroundColor: "#23232E",
+    transform: [{ translateY: 1 }],
+  },
+  dailyEntryText: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  dailyEntryLabel: {
+    fontFamily: "retro",
+    color: "#F5F1E8",
+    fontSize: 20,
+    fontWeight: "700",
+    backgroundColor: "transparent",
+  },
+  dailyEntryDate: {
+    fontFamily: "retro",
+    color: "#FFB454",
+    fontSize: 16,
+    letterSpacing: 0.9,
+    backgroundColor: "transparent",
+  },
+  dailyEntryChevron: {
+    color: "#9A97A3",
+    fontSize: 20,
+    marginLeft: 8,
   },
   paragraph: {
     margin: 24,
