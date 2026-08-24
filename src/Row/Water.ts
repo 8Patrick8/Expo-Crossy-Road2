@@ -43,14 +43,14 @@ export default class Water extends Object3D {
   generateStatic = (clearPositions: number[] = []) => {
     // Speeds: .01 through .08
     // Number of cars: 1 through 3
-    let numItems = Math.floor(Math.random() * 2) + 2;
+    let numItems = Math.floor(this.rand() * 2) + 2;
 
     // Generate initial positions
     const positions: number[] = [];
-    let xPos = Math.floor(Math.random() * 2 - 4);
+    let xPos = Math.floor(this.rand() * 2 - 4);
     for (let i = 0; i < numItems; i++) {
       positions.push(xPos);
-      xPos += Math.floor(Math.random() * 2 + 2);
+      xPos += Math.floor(this.rand() * 2 + 2);
     }
 
     // Ensure at least one lily pad is at a clear position for a winnable path
@@ -62,7 +62,7 @@ export default class Water extends Object3D {
       if (!hasAccessibleLilyPad) {
         // Pick a random clear position and place a lily pad there
         const clearPos =
-          clearPositions[Math.floor(Math.random() * clearPositions.length)];
+          clearPositions[Math.floor(this.rand() * clearPositions.length)];
         // Replace the first lily pad position with the clear position
         positions[0] = clearPos;
         // Sort to maintain left-to-right order
@@ -107,11 +107,11 @@ export default class Water extends Object3D {
   generateDynamic = () => {
     // Speeds: .01 through .08
     // Number of cars: 1 through 3
-    let speed = Math.random() * 0.05 + 0.02;
-    let numItems = Math.floor(Math.random() * 2) + 2;
+    let speed = this.rand() * 0.05 + 0.02;
+    let numItems = Math.floor(this.rand() * 2) + 2;
     let xDir = 1;
 
-    if (Math.random() > 0.5) {
+    if (this.rand() > 0.5) {
       xDir = -1;
     }
 
@@ -139,7 +139,7 @@ export default class Water extends Object3D {
       this.entities[x].speed = speed * xDir;
       // this.entities[x].mesh.rotation.y = (Math.PI / 2) * xDir;
 
-      xPos -= (Math.random() * 3 + 5) * xDir;
+      xPos -= (this.rand() * 3 + 5) * xDir;
     }
   };
 
@@ -165,10 +165,11 @@ export default class Water extends Object3D {
     });
   };
 
-  constructor(heroWidth, onCollide) {
+  constructor(heroWidth, onCollide, rand) {
     super();
     this.heroWidth = heroWidth;
     this.onCollide = onCollide;
+    this.rand = rand;
     const { _river } = ModelLoader;
 
     this.floor = _river.getNode();

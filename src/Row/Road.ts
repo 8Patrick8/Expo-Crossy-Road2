@@ -32,11 +32,11 @@ export default class Road extends Object3D {
 
     // Speeds: .01 through .08
     // Number of cars: 1 through 3
-    let speed = Math.random() * 0.06 + 0.02;
-    let numCars = Math.floor(Math.random() * 2) + 1;
+    let speed = this.rand() * 0.06 + 0.02;
+    let numCars = Math.floor(this.rand() * 2) + 1;
     let xDir = 1;
 
-    if (Math.random() > 0.5) {
+    if (this.rand() > 0.5) {
       xDir = -1;
     }
 
@@ -61,14 +61,15 @@ export default class Road extends Object3D {
       this.cars[x].speed = speed * xDir;
       this.cars[x].mesh.rotation.y = (Math.PI / 2) * xDir;
 
-      xPos -= (Math.random() * 3 + 5) * xDir;
+      xPos -= (this.rand() * 3 + 5) * xDir;
     }
   };
 
-  constructor(heroWidth, onCollide) {
+  constructor(heroWidth, onCollide, rand) {
     super();
     this.heroWidth = heroWidth;
     this.onCollide = onCollide;
+    this.rand = rand;
     const { _road } = ModelLoader;
 
     this.road = _road.models["1"].children[0].clone();
