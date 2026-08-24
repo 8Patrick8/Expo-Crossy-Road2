@@ -1,9 +1,19 @@
-Ich kann die beigefügten Screenshots nicht sehen – ich beurteile den Lauf daher ausschließlich anhand des schriftlichen Testberichts.
+VERDICT: BUGS_FOUND
 
-VERDICT: PASS
+Hinweis: Die beigefügten Screenshots kann ich nicht sehen, daher beurteile ich ausschließlich den Textbericht.
 
-Der Build (`npm run build` Exit 0) und der Browser-Smoke (Playwright Exit 0, 1 Test bestanden) sind sauber. Es gibt keine Produktfehler, keine Konsolenfehler, keine unbehandelten Exceptions und keine Stack-Traces. Der Startbildschirm wird mit `text="0 TOP 0"` ausgeliefert; das entspricht dem erwarteten initialen Highscore-Status (AC-02 mit Wert 0). Die `[input-probe]`-Zeilen zeigen zwar `player moved (0,0)` bzw. „NO movement“, aber der Testkontext ist der Start-/Home-Screen und nicht nachweislich das Gameplay; im statischen Menü ist fehlende Bewegung erwartungsgemäß kein Bug. Die Zeile `score during gameplay: 0 -> 0 — no change (scene may not be in play)` bestätigt diese Unklarheit.
+**Bug 1**
+- **Titel:** Tastatursteuerung bewegt den Spieler im Web nicht
+- **Symptom:** Während des Spiels (Score 1, Spielerposition nicht am Start) bleiben alle getesteten Eingabetasten wirkungslos; der Spieler bewegt sich bei keiner Taste.
+- **Repro:** App im Browser öffnen, ins Spiel gelangen, nacheinander ArrowRight, ArrowLeft, Space, ArrowUp für 900 ms halten und `window.__TEST_API__.player` vorher/nachher vergleichen.
+- **Evidence:** `[input-probe] hold ArrowRight 900ms: frame n/a player moved (0,0) — NO movement` (entsprechende Zeilen für ArrowLeft, Space, ArrowUp).
+- **Suspected file(s):** `src/components/GestureView.tsx` und/oder `src/app/index.tsx` in Verbindung mit `src/GameEngine.ts:moveWithDirection`. Die Tastatur-Event-Handler (`onKeyDown`/`onKeyUp`) lösen offenbar keine Bewegung im Engine aus; vermutlich werden Events nicht korrekt verdrahtet oder `onKeyDown` ruft fälschlich `this.props.onResponderGrant()` statt des übergebenen `onStartGesture`.
+- **Severity:** high
 
-Die Behavioral-Test-Suite ist mit `[env]` markiert und nach Hinweis des Harness unvollständig bzw. nicht vertrauenswürdig. Die dort nicht beobachteten Spezifikationsfähigkeiten (Persistenz über Neustart, Neuer-Bestwert-Hinweis, Reset mit Bestätigung, Validierung) sind daher „nicht nachgewiesen“, nicht „als defekt beobachtet“ – das rechtfertigt nach den Regeln keinen Bug. Auch die `[account-probe]`-Zeile `credential form absent, session not established` ist für diese Spezifikation nicht relevant.
-
-Die npm-/Metro-/three-Warnungen sind Harness-/Build-Noise und beeinträchtigen den produktiven Lauf nicht. Es liegen keine belastbaren Hinweise auf einen Produktfehler vor.
+**Bug 2**
+- **Titel:** Playwright-E2E-Testsuite schlägt fehl
+- **Symptom:** Der vollständige Playwright-Testlauf bricht mit Exit-Code 1 ab, obwohl der einfache Smoke-Test besteht; die umfangreichere Suite ist rot.
+- **Repro:** `npx playwright test` ausführen.
+- **Evidence:** Abschnitt `### playwright test (exit 1)`.
+- **Suspected file(s):** Nicht lokalisiert — der Fehlerbericht ist abgeschnitten und enthält keine konkrete fehlgeschlagene Assertion. Möglicherweise durch Bug 1 verursacht oder ein unabhängiger Fehlschlag einer E2E-Assertion.
+- **Severity:** high
