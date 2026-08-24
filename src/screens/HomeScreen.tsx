@@ -3,6 +3,7 @@ import {
   Animated,
   Dimensions,
   Easing,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -13,17 +14,21 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Hand from "@/components/HandCTA";
 import Footer from "@/components/Home/Footer";
 import GameContext from "@/context/GameContext";
+import { getTodayKey } from "@/utils/prng";
 
 let hasShownTitle = false;
 
 function Screen(props) {
-  const { setCharacter, character, highscore } = React.useContext(GameContext);
+  const { setCharacter, character, highscore, setMode } =
+    React.useContext(GameContext);
   const animation = new Animated.Value(0);
+  const todayKey = getTodayKey();
 
   React.useEffect(() => {
     function onKeyUp({ keyCode }) {
       // Space, up-arrow
       if ([32, 38].includes(keyCode)) {
+        setMode("classic");
         props.onPlay();
       }
     }
@@ -92,6 +97,7 @@ function Screen(props) {
             easing: Easing.in(Easing.qubic),
             onComplete: ({ finished }) => {
               if (finished) {
+                setMode("classic");
                 props.onPlay();
               }
             },
@@ -129,6 +135,25 @@ function Screen(props) {
           /> */}
         </View>
       </TouchableOpacity>
+
+      <View style={styles.dailyEntryWrapper} pointerEvents="box-none">
+        <Pressable
+          onPress={() => {
+            setMode("daily");
+            props.onPlayDaily();
+          }}
+          style={({ pressed }) => [
+            styles.dailyEntry,
+            pressed && styles.dailyEntryPressed,
+          ]}
+        >
+          <View>
+            <Text style={styles.dailyLabel}>Tages-Challenge</Text>
+            <Text style={styles.dailyDate}>{todayKey}</Text>
+          </View>
+          <Text style={styles.dailyChevron}>›</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -185,5 +210,46 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     color: "#34495e",
+  },
+  dailyEntryWrapper: {
+    position: "absolute",
+    top: "50%",
+    marginTop: 180,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+  dailyEntry: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    maxWidth: 420,
+    backgroundColor: "#1A1A22",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#2E2E3A",
+    padding: 16,
+    minHeight: 56,
+  },
+  dailyEntryPressed: {
+    backgroundColor: "#23232E",
+    transform: [{ translateY: 1 }],
+  },
+  dailyLabel: {
+    color: "#F5F1E8",
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  dailyDate: {
+    color: "#FFB454",
+    fontSize: 16,
+    fontFamily: "monospace",
+    marginTop: 4,
+  },
+  dailyChevron: {
+    color: "#9A97A3",
+    fontSize: 20,
   },
 });
