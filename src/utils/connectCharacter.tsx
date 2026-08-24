@@ -1,12 +1,14 @@
-import React from "react";
+import React, { ComponentType } from "react";
 
 import GameContext from "../context/GameContext";
 
 // Higher-order component that injects the selected character (and its setter)
 // from GameContext into a wrapped component. This replaces the original
 // Redux-based `connectCharacter` after the app moved to React Context.
-export default function connectCharacter(WrappedComponent) {
-  return function ConnectedCharacter(props) {
+export default function connectCharacter(
+  WrappedComponent: ComponentType<{ character: string; setCharacter: (id: string) => void }>
+) {
+  return function ConnectedCharacter(props: any) {
     const { character, setCharacter } = React.useContext(GameContext);
     return (
       <WrappedComponent

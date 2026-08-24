@@ -18,6 +18,7 @@ import {
   sceneColor,
   startingRow,
 } from "./GameSettings";
+import { deriveClassicSeed, deriveDailySeed, mulberry32 } from "./utils/prng";
 
 const normalizeAngle = (angle) => {
   return Math.atan2(Math.sin(angle), Math.cos(angle));
@@ -35,9 +36,8 @@ export default class Engine {
   };
 
   setupGame = (character, mode: "classic" | "daily" = "classic"): void => {
-    // `mode` is wired but not yet consumed; seed evaluation lands in the
-    // "Deterministische Streckenerzeugung" ticket.
-    void mode;
+    const seed = mode === "daily" ? deriveDailySeed() : deriveClassicSeed();
+    const rand = mulberry32(seed);
 
     this.scene = new CrossyScene({});
 
@@ -55,6 +55,7 @@ export default class Engine {
       heroWidth: 0.7,
       scene: this.scene,
       onCollide: this.onCollide,
+      rand,
     });
 
     this.camCount = 0;

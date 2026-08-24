@@ -17,10 +17,11 @@ export default class RailRoad extends Object3D {
     return Math.round(box3.max.x - box3.min.x);
   };
 
-  constructor(heroWidth, onCollide) {
+  constructor(heroWidth, onCollide, rand) {
     super();
     this.heroWidth = heroWidth;
     this.onCollide = onCollide;
+    this.rand = rand;
     const { _railroad, _trainLight, _train } = ModelLoader;
 
     this.railRoad = _railroad.getNode();
@@ -29,7 +30,7 @@ export default class RailRoad extends Object3D {
     this.active_light_a = _trainLight.getNode("active_0");
     this.active_light_b = _trainLight.getNode("active_1");
 
-    this._trainMesh = _train.withSize(Math.random() * 2 + 1);
+    this._trainMesh = _train.withSize(this.rand() * 2 + 1);
     const width = this.getWidth(this._trainMesh);
     this.train = {
       mesh: this._trainMesh,

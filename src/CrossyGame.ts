@@ -204,18 +204,19 @@ export class CrossyGameMap extends GameMap {
   railRoads = new EntityContainer();
   rowCount = 0;
 
-  constructor({ heroWidth, onCollide, scene }) {
+  constructor({ heroWidth, onCollide, scene, rand }) {
     super();
 
+    this.rand = rand;
     this.heroWidth = heroWidth;
 
     // Assign mesh to corresponding array
     // and add mesh to scene
     for (let i = 0; i < maxRows; i++) {
-      this.grasses.items[i] = new Rows.Grass(this.heroWidth);
-      this.water.items[i] = new Rows.Water(this.heroWidth, onCollide);
-      this.roads.items[i] = new Rows.Road(this.heroWidth, onCollide);
-      this.railRoads.items[i] = new Rows.RailRoad(this.heroWidth, onCollide);
+      this.grasses.items[i] = new Rows.Grass(this.heroWidth, onCollide, rand);
+      this.water.items[i] = new Rows.Water(this.heroWidth, onCollide, rand);
+      this.roads.items[i] = new Rows.Road(this.heroWidth, onCollide, rand);
+      this.railRoads.items[i] = new Rows.RailRoad(this.heroWidth, onCollide, rand);
       scene.world.add(this.grasses.items[i]);
       scene.world.add(this.water.items[i]);
       scene.world.add(this.roads.items[i]);
@@ -269,7 +270,7 @@ export class CrossyGameMap extends GameMap {
 
     const ROW_TYPES = ["grass", "roadtype", "water"];
     if (rowKind == null) {
-      rowKind = ROW_TYPES[Math.floor(Math.random() * ROW_TYPES.length)];
+      rowKind = ROW_TYPES[Math.floor(this.rand() * ROW_TYPES.length)];
     }
 
     // Get the previous row info for coordination
@@ -296,7 +297,7 @@ export class CrossyGameMap extends GameMap {
         this.grasses.count++;
         break;
       case "roadtype":
-        if (((Math.random() * 4) | 0) === 0) {
+        if (((this.rand() * 4) | 0) === 0) {
           this.railRoads.items[this.railRoads.count].position.z = this.rowCount;
           this.railRoads.items[this.railRoads.count].active = true;
           this.setRow(this.rowCount, {

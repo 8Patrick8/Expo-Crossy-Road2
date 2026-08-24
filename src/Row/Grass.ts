@@ -52,7 +52,7 @@ export default class Grass extends Object3D {
     let mesh;
     if (HAS_VARIETY) {
       mesh =
-        Math.random() < 0.4
+        this.rand() < 0.4
           ? ModelLoader._boulder.getRandom()
           : ModelLoader._tree.getRandom();
     } else {
@@ -72,7 +72,7 @@ export default class Grass extends Object3D {
   treeGen = (type) => {
     // 0 - 8
     let _rowCount = 0;
-    const count = Math.round(Math.random() * 2) + 1;
+    const count = Math.round(this.rand() * 2) + 1;
     for (let x = -3; x < 12; x++) {
       const _x = x - 4;
       if (type === Fill.solid) {
@@ -90,7 +90,7 @@ export default class Grass extends Object3D {
 
       if (HAS_OBSTACLES) {
         if (_rowCount < count) {
-          if (_x !== 0 && Math.random() > 0.6) {
+          if (_x !== 0 && this.rand() > 0.6) {
             this.addObstacle(_x);
             _rowCount++;
           }
@@ -99,9 +99,10 @@ export default class Grass extends Object3D {
     }
   };
 
-  constructor(heroWidth, onCollide) {
+  constructor(heroWidth, onCollide, rand) {
     super();
     this.onCollide = onCollide;
+    this.rand = rand;
     const { _grass } = ModelLoader;
 
     this.floor = _grass.getNode();
