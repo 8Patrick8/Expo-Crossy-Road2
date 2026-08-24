@@ -377,10 +377,10 @@ export class CrossyGameMap extends GameMap {
     }
   };
 
-  mapRowToObstacle = (row) => {
-    if (this.rowCount < 5) {
+  mapRowToObstacle = (row: number) => {
+    if (row < 5) {
       return Fill.solid;
-    } else if (this.rowCount < 10) {
+    } else if (row < 10) {
       return Fill.empty;
     }
     return Fill.random;
