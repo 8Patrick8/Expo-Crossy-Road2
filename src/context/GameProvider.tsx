@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as React from "react";
 
-import GameContext from "./GameContext";
+import GameContext, { GameMode } from "./GameContext";
 
 const CHARACTER_STORAGE_KEY = "@BouncyBacon:Character";
 const HIGHSCORE_STORAGE_KEY = "@BouncyBacon:Highscore";
@@ -49,6 +49,8 @@ async function rehydrateHighscoreAsync(): Promise<number> {
 export default function GameProvider({ children }) {
   const [character, setCharacter] = React.useState(defaultCharacter);
   const [highscore, setHighscore] = React.useState(defaultHighscore);
+  const [mode, setMode] = React.useState<GameMode>("classic");
+  const [dailyBest] = React.useState(0);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -87,6 +89,13 @@ export default function GameProvider({ children }) {
         resetHighscore: () => {
           setHighscore(0);
           cacheHighscoreAsync(0);
+        },
+        mode,
+        setMode,
+        dailyBest,
+        setDailyBest: (_score: number) => {
+          // No-op stub: persistence and maximum logic land in the
+          // "Tages-Bestwert speichern" ticket.
         },
       }}
     >

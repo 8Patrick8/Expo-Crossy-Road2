@@ -51,7 +51,7 @@ class Game extends Component {
       useNativeDriver: true,
       duration: 200,
       onComplete: ({ finished }) => {
-        this.engine.setupGame(this.props.character);
+        this.engine.setupGame(this.props.character, this.props.mode);
         this.engine.init();
 
         if (finished) {
@@ -179,7 +179,7 @@ class Game extends Component {
       this.setState({ gameState: State.Game.gameOver });
       // this.props.navigation.navigate('GameOver')
     };
-    this.engine.setupGame(this.props.character);
+    this.engine.setupGame(this.props.character, this.props.mode);
     this.engine.init();
   }
 
@@ -238,6 +238,9 @@ class Game extends Component {
       <View style={StyleSheet.absoluteFillObject}>
         <HomeScreen
           onPlay={() => {
+            this.updateWithGameState(State.Game.playing);
+          }}
+          onPlayDaily={() => {
             this.updateWithGameState(State.Game.playing);
           }}
           onShowCharacterSelect={() => {
@@ -348,13 +351,14 @@ const GestureView = ({ onStartGesture, onSwipe, ...props }) => {
 
 function GameScreen(props) {
   const scheme = useColorScheme();
-  const { character, setCharacter } = React.useContext(GameContext);
+  const { character, setCharacter, mode } = React.useContext(GameContext);
 
   return (
     <Game
       {...props}
       character={character}
       setCharacter={setCharacter}
+      mode={mode}
       isDarkMode={scheme === "dark"}
     />
   );
