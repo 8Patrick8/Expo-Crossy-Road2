@@ -54,8 +54,14 @@ const banner = [
 
 function GameOver({ score = 0, ...props }) {
   const { width } = useWindowDimensions();
-  const { setCharacter, highscore = 0, setHighscore } =
-    React.useContext(GameContext);
+  const {
+    setCharacter,
+    highscore = 0,
+    setHighscore,
+    mode,
+    dailyBest = 0,
+    setDailyBest,
+  } = React.useContext(GameContext);
   const [wasNewBest] = React.useState(() => score > highscore);
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [characters, setCharacters] = React.useState(
@@ -68,6 +74,12 @@ function GameOver({ score = 0, ...props }) {
   React.useEffect(() => {
     if (wasNewBest) {
       setHighscore(score);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (mode === "daily" && score > dailyBest) {
+      setDailyBest(score);
     }
   }, []);
 
@@ -146,6 +158,14 @@ function GameOver({ score = 0, ...props }) {
     >
       <View key="content" style={{ flex: 1, justifyContent: "center" }}>
         {wasNewBest && <Text style={styles.newBest}>Neuer Bestwert</Text>}
+        {mode === "daily" && (
+          <View style={styles.dailyResult}>
+            <View style={styles.challengeBadge}>
+              <Text style={styles.challengeBadgeText}>Tages-Challenge</Text>
+            </View>
+            <Text style={styles.dailyBestText}>Heute: {dailyBest}</Text>
+          </View>
+        )}
         {banner.map((val, index) => (
           <Banner
             animatedValue={animations[index].interpolate({
@@ -202,6 +222,36 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: 12,
     overflow: "hidden",
+  },
+  dailyResult: {
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: "#2E2E3A",
+    paddingTop: 16,
+    marginTop: 8,
+    marginBottom: 12,
+  },
+  challengeBadge: {
+    backgroundColor: "#23232E",
+    borderWidth: 1,
+    borderColor: "#4DD0E1",
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  challengeBadgeText: {
+    color: "#4DD0E1",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+  dailyBestText: {
+    color: "#FFB454",
+    fontFamily: "retro",
+    fontSize: 24,
+    lineHeight: 27,
+    marginTop: 8,
   },
   paragraph: {
     margin: 24,
