@@ -45,12 +45,12 @@ class Settings extends Component {
 
   resetHighscore = () => {
     Alert.alert(
-      "Reset Highscore",
-      "Are you sure you want to reset your best score to 0? This cannot be undone.",
+      "Bestwert zurücksetzen",
+      "Möchtest du deinen Bestwert wirklich auf 0 zurücksetzen? Das kann nicht rückgängig gemacht werden.",
       [
-        { text: "Cancel", style: "cancel" },
+        { text: "Abbrechen", style: "cancel" },
         {
-          text: "Reset",
+          text: "Zurücksetzen",
           style: "destructive",
           onPress: () => this.context.resetHighscore(),
         },
@@ -159,7 +159,7 @@ class Settings extends Component {
         onPress: (_) => {},
       },
       {
-        text: "Reset\nHighscore",
+        text: "Bestwert\nzurücksetzen",
         source: Images.button.rank,
         imageStyle: imageStyle,
         textColor: "#FF5C5C",
@@ -180,6 +180,8 @@ class Settings extends Component {
             }}
           />
         </View>
+
+        <Text style={styles.highscore}>BESTWERT {this.context.highscore}</Text>
 
         <View
           key="content"
@@ -234,6 +236,19 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(105, 201, 230, 0.8)",
     flexWrap: "wrap",
     maxWidth: "100%",
+  },
+  highscore: {
+    fontFamily: "retro",
+    color: "#f8e84d",
+    fontSize: 20,
+    letterSpacing: 0.9,
+    backgroundColor: "transparent",
+    textAlign: "center",
+    marginTop: 8,
+    shadowColor: "black",
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    shadowOffset: { width: 0, height: 0 },
   },
   paragraph: {
     margin: 24,
