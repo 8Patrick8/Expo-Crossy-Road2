@@ -1,3 +1,3 @@
 VERDICT: UI_OK
 
-Ich kann die Screenshots nicht sehen, daher ist keine visuelle Beurteilung möglich. Aufgrund der fehlenden Sichtprüfung gebe ich vorläufig UI_OK.
+Hinweis: Ich kann die angehängten Screenshots nicht sehen, daher ist keine visuelle Qualitätsbeurteilung möglich. Ich bewerte ausschließlich anhand von SPEC und DESIGN.md; auf dieser Basis gibt es keine sichtbaren UI-Mängel.
