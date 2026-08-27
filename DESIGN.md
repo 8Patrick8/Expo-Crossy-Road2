@@ -6,7 +6,7 @@
 
 ## Style Direction
 
-Dunkler Neo-Arcade-Look: fast schwarzer Hintergrund mit warmem Amber-Akzent, Cyan als Spielerfarbe und hohem HUD-Kontrast — fokussiert, retro-inspiriert, aber ruhig und mobiltauglich; der neue Tages-Challenge-Modus wird als klar abgesetzte, amber-akzentuierte Karte mit Mono-Datum gestaltet.
+Dunkler Neo-Arcade-Look: fast schwarzer Hintergrund mit warmem Amber-Akzent, Cyan als Spielerfarbe und hohem HUD-Kontrast — fokussiert, retro-inspiriert, aber ruhig und mobiltauglich. Die Highscore-Erweiterung nutzt die bestehenden Score-/Badge-/Settings-Bausteine und ergänzt nur einen klar lesbaren Einstellungs-Bestwert sowie einen destruktiven Reset-Eintrag mit Bestätigung.
 
 ## Colors
 
@@ -106,6 +106,14 @@ Label 'HEUTE' muted #9A97A3 12px uppercase letter-spacing 0.1em, Wert font_mono 
 
 Game-Over-Block innerhalb der Card, oberhalb der Buttons: border-top 1px #2E2E3A, padding-top 16px, margin-top 8px. Enthaelt ChallengeBadge 'Tages-Challenge' und darunter DailyBestDisplay mit heutigem Bestwert. Nur rendern, wenn der beendete Lauf eine Tages-Challenge war; im klassischen Modus komplett ausblenden.
 
+### SettingsValue
+
+Rechtsbuendiger Wert innerhalb einer SettingsRow: font_mono 16px, Textfarbe fg #F5F1E8, numerische Bestwerte in accent #FFB454, min-height 48px, vertikal zentriert, max. 1 Zeile ohne Umbruch. Wert ausschliesslich als Klartext rendern (kein HTML/JS/innerHTML), damit gespeicherte Werte niemals ausgefuehrt werden.
+
+### HighscoreResetRow
+
+SettingsRow mit destruktivem Akzent: Label 'Bestwert zuruecksetzen' in danger #FF5C5C, 16px, links; rechts Chevron/Pfeil muted #9A97A3 20px; min-height 48px, padding 16px, border-bottom 1px #2E2E3A; hover=bg surface_raised #23232E, active=bg #1A1A22. Oeffnet ConfirmDialog mit Bestaetigen-Button bg=danger #FF5C5C; Bestwert ausschliesslich als Klartext rendern.
+
 ### Sprite/Art Direction
 
 Player: 48x48px, Silhouette klare Kapsel/Figur, 3 Toene player #4DD0E1 / player_dark #2A9BA8 / player_light #A8F0F8, 2px outline #0B0B10, weisses Auge 2x2px. Enemy: 48x48px, kantige Dornenform, 3 Toene enemy #FF5C8A / enemy_dark #C43D66 / enemy_light #FFA6C0, 2px outline #0B0B10, dunkler Schlitz als Auge. Item: 32x32px, Raute/Stern, 3 Toene item #FFD166 / item_dark #D9A93A / item_light #FFE9A8, 2px outline #0B0B10, heller Glanzpunkt. Tiles: 48x48px, flach mit subtiler 1px-Innenkante, tile #22222E und tile_alt #1A1A24 abwechselnd, keine Saettigung im Hintergrund. Alle Entities als echte einfache Pixel-Arts mit mindestens 3 Toenen + Outline, keine einfarbigen Rechtecke als Platzhalter.
@@ -120,7 +128,7 @@ Startbildschirm: zentrierte Spalte, max-width 420px, Titel display 32px bold, Hi
 
 ### Readability Rules
 
-Player/Cyan und Item/Gelb ausschliesslich auf dunklen Tiles #22222E/#1A1A24 verwenden, nie auf Cyan- oder Gelbflaechen. Feinde/Rot duerfen nie mit item/Gelb kombiniert werden, um Verwechslung zu vermeiden. Hintergrund gedaempft und saettigungsarm, Vordergrund-Entities hoch gesaettigt; Text nur in fg #F5F1E8 oder accent #FFB454 auf dunklen Flaechen, Mindestkontrast 4.5:1; HUD immer auf halbtransparentem dunklem Balken, nie frei auf hellem Hintergrund.
+Player/Cyan und Item/Gelb ausschliesslich auf dunklen Tiles #22222E/#1A1A24 verwenden, nie auf Cyan- oder Gelbflaechen. Feinde/Rot duerfen nie mit Item/Gelb kombiniert werden, um Verwechslung zu vermeiden. Hintergrund gedaempft und saettigungsarm, Vordergrund-Entities hoch gesaettigt; Text nur in fg #F5F1E8 oder accent #FFB454 auf dunklen Flaechen, Mindestkontrast 4.5:1; HUD immer auf halbtransparentem dunklem Balken, nie frei auf hellem Hintergrund. Gespeicherte Bestwerte ausschliesslich als Klartext rendern.
 
 ## Layout Principles
 
