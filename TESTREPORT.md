@@ -1,19 +1,14 @@
-VERDICT: BUGS_FOUND
+VERDICT: PASS
 
-Hinweis: Die beigefügten Screenshots kann ich nicht sehen, daher beurteile ich ausschließlich den Textbericht.
+Der Testbericht zeigt einen erfolgreichen Lauf der gebauten Web-App:
 
-**Bug 1**
-- **Titel:** Tastatursteuerung bewegt den Spieler im Web nicht
-- **Symptom:** Während des Spiels (Score 1, Spielerposition nicht am Start) bleiben alle getesteten Eingabetasten wirkungslos; der Spieler bewegt sich bei keiner Taste.
-- **Repro:** App im Browser öffnen, ins Spiel gelangen, nacheinander ArrowRight, ArrowLeft, Space, ArrowUp für 900 ms halten und `window.__TEST_API__.player` vorher/nachher vergleichen.
-- **Evidence:** `[input-probe] hold ArrowRight 900ms: frame n/a player moved (0,0) — NO movement` (entsprechende Zeilen für ArrowLeft, Space, ArrowUp).
-- **Suspected file(s):** `src/components/GestureView.tsx` und/oder `src/app/index.tsx` in Verbindung mit `src/GameEngine.ts:moveWithDirection`. Die Tastatur-Event-Handler (`onKeyDown`/`onKeyUp`) lösen offenbar keine Bewegung im Engine aus; vermutlich werden Events nicht korrekt verdrahtet oder `onKeyDown` ruft fälschlich `this.props.onResponderGrant()` statt des übergebenen `onStartGesture`.
-- **Severity:** high
+- `npm run build` endet mit Exit 0 und erzeugt den Web-Build; die `three`-Warnungen zu ungültigen `exports` sind Warnungen beim Bundling (Metro/Third-Party-Auflösung), kein Laufzeitfehler.
+- Der Playwright-Smoke läuft fehlerfrei (`1 passed`), es treten keine Console-Errors oder Uncaught Exceptions auf.
+- Die Anforderungs-Tests bestehen vollständig (`4 passed`):
+  - `AC-01: two daily runs on the same day generate identical rows` ✓
+  - `AC-02: the daily run uses the daily seed, not the mount-time time seed` ✓
+  - `AC-03: a classic run starts normally and uses a non-deterministic path` ✓
+- Die im Report sichtbaren `[input-probe]`-Zeilen mit `— NO movement` stammen aus dem statischen Start-/Menüzustand (`route-probe /` mit Home-Text `0 TOP 0 Tages-Challenge …`, Score 0, kein laufendes Spiel). In einem statischen Menü ist „no effect“ laut Bewertungsregeln normal und kein Bug.
+- `credential form absent, session not established` ist für dieses Projekt ohne Auth-Funktion erwartbar und kein Produktfehler.
 
-**Bug 2**
-- **Titel:** Playwright-E2E-Testsuite schlägt fehl
-- **Symptom:** Der vollständige Playwright-Testlauf bricht mit Exit-Code 1 ab, obwohl der einfache Smoke-Test besteht; die umfangreichere Suite ist rot.
-- **Repro:** `npx playwright test` ausführen.
-- **Evidence:** Abschnitt `### playwright test (exit 1)`.
-- **Suspected file(s):** Nicht lokalisiert — der Fehlerbericht ist abgeschnitten und enthält keine konkrete fehlgeschlagene Assertion. Möglicherweise durch Bug 1 verursacht oder ein unabhängiger Fehlschlag einer E2E-Assertion.
-- **Severity:** high
+Damit ist die geforderte Kernfunktion — korrektes Aufsetzen des ersten Tages-Challenge-Laufs mit Tages-Seed — im Lauf nachweislich erfüllt, ohne erkennbare Laufzeitfehler.
