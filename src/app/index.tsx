@@ -241,6 +241,8 @@ class Game extends Component {
             this.updateWithGameState(State.Game.playing);
           }}
           onPlayDaily={() => {
+            this.engine.setupGame(this.props.character, "daily");
+            this.engine.init();
             this.updateWithGameState(State.Game.playing);
           }}
           onShowCharacterSelect={() => {
